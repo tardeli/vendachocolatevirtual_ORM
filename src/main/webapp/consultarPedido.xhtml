@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+
+    <ui:define name="conteudo">
+
+        <h:form id="form_pedido">   
+
+            <p:panel header="Lista - Pedidos">
+                <p:dataTable id = "dataTablePedidos" value="#{pedidoBean.listaPedidos}" var="pedido" 
+                             emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top" rows="2" style="font-size: 11pt"><br />
+                    <p:column headerText="Cód." width="130" sortBy="#{pedido.codigo}" filterBy="#{pedido.codigo}" filterMatchMode="contains">
+                        <h:outputText value="#{pedido.codigo}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{pedido.cliente.nome}" filterBy="#{pedido.cliente.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{pedido.cliente.nome}" />
+                    </p:column>
+                    <p:column headerText="Total" width="80">
+                        <h:outputText value="#{pedido.total}" />
+                    </p:column>
+                    <p:column headerText="Data" width="120" sortBy="#{pedido.data}" filterBy="#{pedido.data}" filterMatchMode="contains">
+                        <h:outputText value="#{pedido.data}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Status" width="120" sortBy="#{pedido.status}" filterBy="#{pedido.status}" filterMatchMode="contains">
+                        <h:outputText value="#{pedido.status}" />
+                    </p:column>
+
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-pencil" action="#{pedidoBean.editarPedido(pedido)}" update=":form_pedido:dataTableItensPedido"></p:commandButton>
+                    </p:column>
+                    <p:growl id="message" showDetail="true" /> 
+                </p:dataTable>
+            </p:panel>
+            <p:separator/>            
+            <p:panel header="Lista - Itens do Pedido">
+                <p:dataTable id = "dataTableItensPedido" value="#{pedidoBean.listaItens}" var="item" 
+                             emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top" rows="2" style="font-size: 11pt"><br />
+                    <p:column headerText="Cód." width="30">
+                        <h:outputText value="#{item.produto.codigo}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{produto.nome}" filterBy="#{produto.nome}">
+                        <h:outputText value="#{item.produto.nome}" />
+                    </p:column>
+                    <p:column headerText="Descrição">
+                        <h:outputText value="#{item.produto.descricao}" />
+                    </p:column>
+                    <p:column headerText="Tamanho">
+                        <h:outputText value="#{item.produto.tamanho.nome}" />
+                    </p:column>
+                    <p:column headerText="Preço" style="width: 70px">
+                        <h:outputText value="#{item.produto.preco}"/>
+                    </p:column>
+                    <p:column headerText="Qtde" style="width: 70px">
+                        <h:outputText value="#{item.quantidade}" />
+                    </p:column>
+                    <p:column headerText="Total" style="width: 70px">
+                        <h:outputText value="#{item.total}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{pedidoBean.excluir(item)}" update=":form_pedido:dataTableItensPedido "/>
+                    </p:column>
+                    <p:growl id="message" showDetail="true" /> 
+
+                    <f:facet name="footer">
+                        <h:outputText value="Existem " />
+                        <h:outputText value="#{fn:length(pedidoBean.listaItens)}" />
+                        <h:outputText value=" itens cadastrados. " />  
+                        <h:outputText value=" Valor Total Pedido:  " />  
+                        <h:outputText value="#{pedidoBean.pedido.total}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                        <p:commandButton style="margin-left: 30px;"
+                                         icon="" value="AdicionarProdutos" 
+                                         oncomplete="PF('dialago').show();"
+                                         />
+                        <p:commandButton style="margin-left: 30px;"
+                                         icon="" value="Finalizar Edição" 
+                                         oncomplete="PF('dialago').show();"
+                                         rendered="#{pedidoBean.listaItensVazia!=false}"
+
+                                         />
+
+                    </f:facet>
+                </p:dataTable>
+            </p:panel>
+
+            <p:dialog widgetVar="dialago" closable="false" modal="true" header="Adicinar Itens" resizable="false">
+                <h:form id="form_dialago_itens">     
+                    <p:dataTable id = "dataTableProdutos" value="#{pedidoBean.listaProdutos}" var="produto" 
+                                 emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top" rows="5" style="font-size: 11pt"><br />
+                        <p:column headerText="Cód." width="30">
+                            <h:outputText value="#{produto.codigo}" />
+                        </p:column>
+                        <p:column headerText="Nome" sortBy="#{produto.nome}" filterBy="#{produto.nome}" filterMatchMode="contains">
+                            <h:outputText value="#{produto.nome}" />
+                        </p:column>
+                        <p:column headerText="Descrição">
+                            <h:outputText value="#{produto.descricao}" />
+                        </p:column>
+                        <p:column headerText="Tamanho">
+                            <h:outputText value="#{produto.tamanho.nome}" />
+                        </p:column>
+                        <p:column headerText="Preço">
+                            <h:outputText value="#{produto.preco}" />
+                        </p:column>
+
+                        <p:column headerText="" width="35">
+                            <p:commandButton icon="ui-icon-plus" action="#{pedidoBean.adicionar(produto)}" update=":form_pedido:dataTableItensPedido"></p:commandButton>
+                        </p:column>
+                        <p:growl id="message" showDetail="true" /> 
+                        <f:facet name="footer">
+                            <p:commandButton style="margin-left: 30px;"
+                                             icon="" value="Sair" 
+                                             oncomplete="PF('dialago').hide();"
+                                             />
+                        </f:facet>
+                    </p:dataTable>
+
+                </h:form>
+            </p:dialog>
+
+        </h:form>   
+    </ui:define>
+</ui:composition>
+
+

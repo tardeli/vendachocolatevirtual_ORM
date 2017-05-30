@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+
+                template="/templates/modelo.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <ui:define name="conteudo">
+
+               
+            <p:carousel autoPlayInterval="2000" numVisible="1" effect="easeInStrong" circular="true" itemStyle="height:350px;width:250px;" >
+                
+                <p:graphicImage library="img" name="chocolate_1.jpg" style="height: 350px; width: 1200px; margin-left: 60px; "/>
+                <h:outputLink value="http://www.voceespecialista.com.br/ead/site/index">
+                    <p:graphicImage library="img" name="chocolate_2.jpg" style="height: 350px; width: 1200px; margin-left: 60px; "/>
+                </h:outputLink>
+                
+                <p:graphicImage library="img" name="chocolate_3.jpg" style="height: 350px; width: 1200px; margin-left: 60px; "/>
+                <h:outputLink value = "http://polos.unoparead.com.br/">
+                    <p:graphicImage library="img" name="chocolate_4.jpg" style="height: 350px; width: 1200px; margin-left: 60px; "/>
+                </h:outputLink>
+            </p:carousel>
+        
+
+    </ui:define>
+</ui:composition>
+
+

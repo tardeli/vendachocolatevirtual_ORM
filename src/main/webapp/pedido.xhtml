@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+    <ui:define name ="conteudo">
+
+        <h:form id="form_venda">   
+
+            <p:panel header="Lista - Produtos">       
+                <p:dataTable id = "dataTableProdutos" value="#{pedidoBean.listaProdutos}" var="produto" 
+                             emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top" rows="2" style="font-size: 11pt"><br />
+                    <p:column headerText="Cód." width="30">
+                        <h:outputText value="#{produto.codigo}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{produto.nome}" filterBy="#{produto.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{produto.nome}" />
+                    </p:column>
+                    <p:column headerText="Descrição" width="660">
+                        <h:outputText value="#{produto.descricao}" />
+                    </p:column>
+                    <p:column headerText="Peso (g)" width="70">
+                        <h:outputText value="#{produto.peso}" >
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Preço (R$)" width="80">
+                        <h:outputText value="#{produto.preco}" >
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Linha Produto">
+                        <h:outputText value="#{produto.linhaProduto}" />
+                    </p:column>
+                    
+
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-plus" action="#{pedidoBean.adicionar(produto)}" update=":form_venda:dataTableItens"></p:commandButton>
+                    </p:column>
+                    <p:growl id="message" showDetail="true" /> 
+                </p:dataTable>
+            </p:panel>
+            <p:separator/>
+            <p:panel header="Lista - Itens adicionados ao Carrinho Compras!">
+                <p:dataTable id = "dataTableItens" value="#{pedidoBean.listaItens}" var="item" 
+                             emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top" rows="3" style="font-size: 11pt"><br />
+                    <p:column headerText="Cód." width="30">
+                        <h:outputText value="#{item.produto.codigo}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{produto.nome}" filterBy="#{produto.nome}" width="120">
+                        <h:outputText value="#{item.produto.nome}" />
+                    </p:column>
+                    <p:column headerText="Descrição" width="660">
+                        <h:outputText value="#{item.produto.descricao}" />
+                    </p:column>
+                    <p:column headerText="Peso (g)" width="60" style="text-align: center;">
+                        <h:outputText value="#{item.produto.peso}" >
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Preço" width="80" style="text-align: center;">
+                        <h:outputText value="#{item.produto.preco}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Qtde" width="50" style="text-align: center;">
+                        <h:outputText value="#{item.quantidade}" />
+                    </p:column>
+                    <p:column headerText="Total" style="width: 70px; text-align: center;">
+                        <h:outputText value="#{item.total}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{pedidoBean.excluir(item)}" update=":form_venda:dataTableItens "/>
+                    </p:column> 
+                    <p:growl id="message" showDetail="true" /> 
+
+                    <f:facet name="footer">
+                        <h:outputText value="Existem " />
+                        <h:outputText value="#{fn:length(pedidoBean.listaItens)}" />
+                        <h:outputText value=" itens cadastrados. " />  
+                        <h:outputText value=" Valor Total Pedido:  " />  
+                        <h:outputText value="#{pedidoBean.pedido.total}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                        <p:commandButton style="margin-left: 30px;"
+                                         icon="" value="Finalizar Carrinho" 
+                                         oncomplete="PF('dialago').show();"
+                                         rendered="#{pedidoBean.listaItensVazia!=false}"
+                                         update=":form_dialago_fimVenda:painel_dialago_venda"
+                                         />
+
+                    </f:facet>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+
+        <p:dialog widgetVar="dialago" closable="false" modal="true" header="Confimar Compras" resizable="false">
+            <h:form id="form_dialago_fimVenda">
+
+                <h:panelGrid id="painel_dialago_venda" columns="1">
+                    <h:outputLabel>DATA: 
+                        <p:outputLabel id="data"  value="#{pedidoBean.pedido.data}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </p:outputLabel>
+                    </h:outputLabel>
+                    <p:outputLabel >CLIENTE: 
+                        <h:outputText value="Usuário Logado" /> 
+                    </p:outputLabel>
+                    <h:outputLabel>VALOR TOTAL: 
+                        <p:outputLabel id="total"  value="#{pedidoBean.pedido.total}">  
+                            <f:convertNumber pattern="#0.00" />
+                        </p:outputLabel>
+                    </h:outputLabel>
+                </h:panelGrid>
+
+                <p:separator/>
+
+                <p:panelGrid columns="2" style="margin-bottom:10px">
+                    <h:outputText value="CADASTRAR ENTREGA: " />
+                    <p:selectBooleanCheckbox value="#{pedidoBean.cadastroEntrega}">
+                        <p:ajax update=":form_dialago_fimVenda:painelGroupEntrega" />
+                    </p:selectBooleanCheckbox>
+                </p:panelGrid>
+                <p:separator/>
+
+                <h:panelGroup id="painelGroupEntrega">
+                    <p:panelGrid id="painel_Entrega" columns="1" rendered="#{pedidoBean.cadastroEntrega==true}" >
+                        <p:outputLabel>HORA:
+                            <p:outputLabel value="#{entregaBean.entrega.hora}"> 
+                                <f:convertDateTime pattern="HH:mm:ss" timeZone="GMT-02:00"/>
+                            </p:outputLabel>
+                        </p:outputLabel>
+                        <p:outputLabel for="comboboxEntregador">ENTREGADOR: 
+                            <p:selectOneMenu filter="true" id="comboboxEntregador"  value="#{entregaBean.entrega.entregador}" converter="entregadorConverter" >
+                                <f:selectItem itemLabel="Selecione um entregador" />
+                                <f:selectItems value="#{entregaBean.listaEntregadores}"  var="Entregador" itemValue="#{Entregador}" itemLabel="#{Entregador.nome}"/>       
+                            </p:selectOneMenu>
+                        </p:outputLabel>
+                        <p:outputLabel>TAXA:
+                            <p:inputText value = "#{entregaBean.entrega.taxa}"/>
+                        </p:outputLabel>
+                    </p:panelGrid>
+                </h:panelGroup>    
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" 
+                                     id="salvar"  
+                                     actionListener="#{pedidoBean.inserirPedido()}"
+                                     update=":form_venda:dataTableItens :form_dialago_fimVenda :mensagem"/>
+                    <p:commandButton value="Cancelar" id="fechar" 
+                                     actionListener="#{pedidoBean.limpar()}" 
+                                     oncomplete="PF('dialago').hide()" 
+                                     update=":form_venda:dataTableItens"/>
+                </h:panelGrid>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>
+

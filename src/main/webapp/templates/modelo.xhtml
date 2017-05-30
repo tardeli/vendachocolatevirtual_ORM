@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Loja VIrtual de Chocolates</title>
+    </h:head>
+    <h:body>
+         <p:growl id="mensagem"  />
+        
+            <div id = "geral">
+                <div id = "top"  >
+                    <p:toolbar style="margin-bottom: 10px;">
+                        <f:facet name="left">
+                            <h:outputText value="LOJA VIRTUAL DE CHOCOLATES" style="font-size: 20px;"/>
+                            <h:outputText value=" >>Usuário" style="font-size: 14px;"/>
+                            <h:outputText value=" >>" style="font-size: 14px;"/>
+                            <p:graphicImage library="img" name="chocolate.jpg" style="padding: 5px; margin-right: 20px; float: left; display: block; width: 90px; height: 40px;"/>
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton value="Cadastro"/>
+                            <p:commandButton value="Efetuar Login"/>
+                        </f:facet>
+                    </p:toolbar>
+                </div>
+               
+                <div id = "cabecalho">
+                    <h:form>  
+                        <p:growl id="messages"/>
+
+                        <p:menubar style="margin-bottom: 10px;">
+                            <p:menuitem value="Ínicio" url="index.xhtml" icon="ui-icon-home" />
+                      
+                            <p:submenu label="Fazer Cadastro">
+                                <p:menuitem value="Cliente" url="cliente.xhtml" />
+                                <p:menuitem value="Entregador" url="entregador.xhtml" />
+                                <p:menuitem value="Empresa" url="empresa.xhtml" />
+                                <p:menuitem value="Funcionario" url="funcionario.xhtml" />
+                                <p:menuitem value="Produto" url="produto.xhtml" />
+                            </p:submenu>
+                            
+                            <p:submenu label="Carrinho de Compras">
+                                <p:menuitem value="Cadastrar" url="pedido.xhtml" />
+                                <p:menuitem value="Consultar" url="consultarPedido.xhtml" />
+                            </p:submenu>
+
+                            <p:submenu label="Promoções">
+                                
+                            </p:submenu>
+                            
+                            <p:submenu label="Sobre">
+                                
+                            </p:submenu>
+
+                            <p:menuitem value="Sair" icon="ui-icon-close" />
+                        </p:menubar>
+                    </h:form>
+                </div>
+
+                <div id = "conteudo">
+                    <ui:insert name="conteudo"/>
+                </div>
+                <div id="footer">
+                    <p:toolbar style="margin-top: 10px;">
+                        <f:facet name="left">
+                            <h:outputText value="&copy; Copyright 2017 T_R_Cco - Versão 1.0.0" style="font-size: 12px; margin-left: 520px;"/>        
+                        </f:facet>
+                    </p:toolbar>
+                  
+                </div>
+
+            </div>
+        
+    </h:body>
+</html>
+
